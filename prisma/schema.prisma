@@ -1,0 +1,22 @@
+// hanko-buster Prismaスキーマ (Prisma 7対応版)
+// 接続URLはこのファイルではなく prisma.config.ts(CLI用)と lib/prisma.ts(アプリ用)が持つ
+
+generator client {
+  provider = "prisma-client-js"
+  // Next.js 16 (Turbopack) では output を指定しない構成が安定
+}
+
+datasource db {
+  provider = "postgresql"
+  // Prisma 7では url をここに書けない(P1012になる)
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  // リレーションは Application 等のモデル追加時にここへ足していく
+}

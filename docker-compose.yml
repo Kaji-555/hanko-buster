@@ -1,0 +1,29 @@
+# hanko-buster ローカル開発用DB
+# 使い方:
+#   起動:   docker compose up -d
+#   停止:   docker compose down
+#   状態:   docker compose ps
+#   ログ:   docker compose logs -f db
+#   全削除: docker compose down -v  (ボリュームごと消す = DBの中身が消えるので注意)
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: hanko-buster-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres # ローカル専用。本番はSupabaseなのでこの値は外に出ない
+      POSTGRES_DB: hanko_buster
+    ports:
+      - "5432:5432" # ホストの5432 → コンテナの5432。他のPostgresが動いていたら左側を5433等に変える
+    volumes:
+      - db-data:/var/lib/postgresql/data # コンテナを消してもデータが残るように名前付きボリュームへ
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hanko_buster"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db-data:
