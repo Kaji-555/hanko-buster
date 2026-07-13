@@ -21,6 +21,12 @@ export const credentialsSchema = z.object({
   password: z.string().min(1),
 });
 
+// タイミング攻撃対策用のダミーbcryptハッシュ(中身は無意味な固定値)。
+// ユーザー不在時に即returnすると、bcrypt.compareの計算時間(数十ms)の分だけ応答が速くなり、
+// 応答時間の差から「このemailは登録済みか」を外部から推測できてしまう(ユーザー列挙)。
+// 不在時もこれと比較して、どちらの失敗でも所要時間をほぼ揃える。
+const DUMMY_HASH = "$2b$10$SjxXKUZ4KLdfH1uqqwuRlOVMk9rBevPTGJonCb/OxHCG1WCGQqfTG";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   // Auth.jsは本番ビルド(next start)でHostヘッダを既定で信頼せずUntrustedHostエラーになる。
@@ -45,7 +51,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
+        if (!user) {
+          // 比較結果は使わない。実在ユーザーの照合と同じ時間を消費させるためだけに実行する
+          await bcrypt.compare(password, DUMMY_HASH);
+          return null;
+        }
 
         // 平文パスワードを保存済みハッシュと照合(bcryptがソルト込みで検証してくれる)
         const isValid = await bcrypt.compare(password, user.passwordHash);
