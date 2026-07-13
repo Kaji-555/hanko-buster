@@ -181,6 +181,10 @@ hanko-buster/
 ### UI
 
 - shadcn/uiのコンポーネントを優先して使い、独自CSSを最小化する。
+- **shadcn/uiは導入済み**(2026-07)。必要なコンポーネントは `npx shadcn@latest add <name>` で `components/ui/` に生成する。
+  - スタイルはbase-nova。プリミティブは **Radixではなく @base-ui/react**(現行shadcnの標準)。ネット上のRadix前提の古い記事に注意。
+  - テーマ変数(oklch)は `app/globals.css`、クラス結合は `lib/utils.ts` の `cn()`。
+  - 色はハードコード(`bg-zinc-*` 等)ではなくセマンティックトークン(`bg-primary`, `text-destructive`, `bg-muted` 等)を使う。
 - 日本語UI。ステータス表示は色+テキストで(色だけに頼らない)。
 - 楽観的ロックの競合エラーは「他のユーザーが先に処理しました」と明確に伝え、再読み込みを促す。
 
