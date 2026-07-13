@@ -10,7 +10,16 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+
+// ログイン入力の検証スキーマ(CLAUDE.md 6: 外部入力はZodで検証してから使う)。
+// 将来ログインフォーム側でも同じルールで事前検証できるようexportしておく。
+// 注: z.email()はzod v4の書き方。v3の z.string().email() は非推奨になった
+export const credentialsSchema = z.object({
+  email: z.email(),
+  password: z.string().min(1),
+});
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -30,12 +39,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // nullを返す = 認証失敗。理由(ユーザー不在/パスワード違い)は呼び出し側に
       // 区別させない。攻撃者に「このemailは存在する」というヒントを与えないため。
       async authorize(credentials) {
-        // 外部入力なので型を信用しない。string以外は即失敗
-        // (本来はZodで検証したいが、zodはまだ依存に追加していないため型絞り込みで代用)
-        const { email, password } = credentials;
-        if (typeof email !== "string" || typeof password !== "string") {
-          return null;
-        }
+        // 外部入力なので型を信用しない。Zodで形式ごと検証し、不正なら即失敗
+        const parsed = credentialsSchema.safeParse(credentials);
+        if (!parsed.success) return null;
+        const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) return null;
