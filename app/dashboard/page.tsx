@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { logoutAction } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "ダッシュボード | hanko-buster",
@@ -26,12 +27,9 @@ export default async function DashboardPage() {
             ダッシュボード
           </h1>
           <form action={logoutAction}>
-            <button
-              type="submit"
-              className="h-9 rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium shadow-sm hover:bg-zinc-100"
-            >
+            <Button type="submit" variant="outline">
               ログアウト
-            </button>
+            </Button>
           </form>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
