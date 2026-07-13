@@ -1,5 +1,5 @@
 // ログインページ(Server Component)
-// ページは「枠」だけを持ち、インタラクションはLoginFormに閉じ込める
+// カードの見た目ごとLoginForm側(shadcnのCard)に持たせたので、ここは配置だけ
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
@@ -17,18 +17,8 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-zinc-50 p-4">
-      <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-        <div className="mb-6 flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            hanko-buster
-          </h1>
-          <p className="text-sm text-zinc-500">
-            メールアドレスとパスワードでログインしてください
-          </p>
-        </div>
-        <LoginForm />
-      </div>
+    <main className="flex flex-1 items-center justify-center bg-muted/50 p-4">
+      <LoginForm />
     </main>
   );
 }
