@@ -14,6 +14,10 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
+  // Auth.jsは本番ビルド(next start)でHostヘッダを既定で信頼せずUntrustedHostエラーになる。
+  // Vercel上では自動で信頼されるため、この設定はローカルで本番ビルドを動かすためのもの。
+  // (リバースプロキシ配下で自前ホスティングする場合は要再検討)
+  trustHost: true,
   // 未ログイン時の誘導先を自作のログイン画面にする(デフォルトはAuth.js組み込み画面)
   pages: { signIn: "/login" },
   providers: [
