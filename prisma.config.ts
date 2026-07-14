@@ -16,8 +16,8 @@ export default defineConfig({
     seed: "node --env-file=.env --experimental-strip-types prisma/seed.ts",
   },
   datasource: {
-    // 本番(Supabase)に対してマイグレーションを打つ日が来たら、
-    // ここは直接接続(5432)のURLを指す環境変数に切り替える
-    url: env("DATABASE_URL"),
+    // CLI(migrate等)は常にDIRECT_URLを読む。中身がローカルDockerか
+    // Supabaseかは.env側の責任(コードは環境を意識しない)
+    url: env("DIRECT_URL"),
   },
 });

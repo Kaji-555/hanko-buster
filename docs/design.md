@@ -168,3 +168,16 @@ stateDiagram-v2
    社内数十人規模のMVPでは許容できると判断し、現段階では対応しない。
    将来必要になった場合の選択肢: (a) トークンを短命化し定期更新させる、
    (b) jwtコールバック内で毎回ユーザーの存在・有効性をDBチェックする(JWTの利点は一部失われる)。
+6. **Supabase プロジェクト作成時のセキュリティ設定について**
+   すべての初期API・セキュリティ自動生成機能を OFF とする。
+   Enable Data API → OFF
+   Automatically expose new tables → OFF
+   Enable automatic RLS → OFF
+   採択の理由（アーキテクチャ設計との整合性）
+   本システムは 「Next.js（Server Actions） + Prisma」 の構成を採用しており、データベースへのアクセスおよび認可（アクセス制御）の責務はすべて Next.jsのサーバー層（アプリケーション層） に集約する設計となっている。
+   Enable Data API & Automatically expose new tables（OFF）
+   理由: ブラウザから supabase-js を用いて直接DBを操作する構成ではないため、自動生成されるREST APIは一切使用しない。使用しない不要なエントリーポイント（攻撃面）を排除し、アタックサーフェスを最小限に抑えるセキュリティファーストの観点から無効化する。
+   Enable automatic RLS（OFF）
+   理由: 認可の関所はサーバー層（auth() によるセッション確認およびServer Actions内での権限チェック）に置いて制御するため、DB層でのRLS（行レベルセキュリティ）は不要となる。また、Prisma経由の接続はDBのオーナー権限（バイパス）となるため実質的にRLSを素通りする。マイグレーションのたびに不要なイベントトリガーが走るノイズを避けるため、最初から無効化を選択する。
+   7. **seed警告・保留中**
+   ExperimentalWarning及び、MODULE_TYPELESS_PACKAGE_JSON Warning。「package.jsonに "type": "module" を足せ」とのこと。
