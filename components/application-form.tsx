@@ -81,7 +81,7 @@ export function ApplicationForm({
           required
           defaultValue={
             defaultValues?.applicationDate ??
-            new Date().toISOString().slice(0, 10)
+            new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" })//sv-SEはYYYY-MM-DD書式になるイディオム
           }
           aria-invalid={!!state?.errors?.applicationDate}
         />
