@@ -4,6 +4,7 @@
 // セッションがなければredirectする。サーバー側で毎回検証するので、
 // URLを直叩きされてもログインなしでは中身が届かない(CLAUDE.md 4-4)。
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { logoutAction } from "@/actions/auth";
@@ -36,6 +37,11 @@ export default async function DashboardPage() {
           <p className="text-sm text-zinc-500">ログイン中のユーザー</p>
           <p className="mt-1 text-lg font-medium">{session.user.email}</p>
         </div>
+        <Button
+          variant="outline"
+          className="w-fit"
+          render={<Link href="/applications">自分の申請一覧へ</Link>}
+        />
       </div>
     </main>
   );
