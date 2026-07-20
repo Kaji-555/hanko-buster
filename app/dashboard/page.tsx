@@ -40,6 +40,7 @@ export default async function DashboardPage() {
         <Button
           variant="outline"
           className="w-fit"
+          nativeButton={false}
           render={<Link href="/applications">自分の申請一覧へ</Link>}
         />
       </div>

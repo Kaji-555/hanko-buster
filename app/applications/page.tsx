@@ -44,7 +44,10 @@ export default async function ApplicationsPage() {
           <h1 className="text-2xl font-semibold tracking-tight">
             自分の申請一覧
           </h1>
-          <Button render={<Link href="/applications/new">新規作成</Link>} />
+          <Button
+            nativeButton={false}
+            render={<Link href="/applications/new">新規作成</Link>}
+          />
         </div>
 
         <div className="rounded-xl border bg-white shadow-sm dark:bg-zinc-950">
@@ -85,6 +88,7 @@ export default async function ApplicationsPage() {
                         <Button
                           variant="outline"
                           size="sm"
+                          nativeButton={false}
                           render={
                             <Link href={`/applications/${application.id}/edit`}>
                               編集
