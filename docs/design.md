@@ -181,3 +181,5 @@ stateDiagram-v2
    理由: 認可の関所はサーバー層（auth() によるセッション確認およびServer Actions内での権限チェック）に置いて制御するため、DB層でのRLS（行レベルセキュリティ）は不要となる。また、Prisma経由の接続はDBのオーナー権限（バイパス）となるため実質的にRLSを素通りする。マイグレーションのたびに不要なイベントトリガーが走るノイズを避けるため、最初から無効化を選択する。
    7. **seed警告・保留中**
    ExperimentalWarning及び、MODULE_TYPELESS_PACKAGE_JSON Warning。「package.jsonに "type": "module" を足せ」とのこと。
+   8. **TZについて**
+   業務日付のTZはJST固定。国内向け業務用アプリのため。
